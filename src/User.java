@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class User extends Observable {
     private static int userCount = 0;
     private String id;
@@ -21,6 +20,14 @@ public class User extends Observable {
         return id;
     }
 
+    public List<User> getFollowers() {
+        return followers;
+    }
+
+    public List<User> getFollowing() {
+        return following;
+    }
+
     public List<String> getNewsFeed() {
         return newsFeed;
     }
@@ -32,7 +39,7 @@ public class User extends Observable {
         }
     }
 
-    public void addFollower(User user) {
+    private void addFollower(User user) {
         if (!followers.contains(user)) {
             followers.add(user);
         }

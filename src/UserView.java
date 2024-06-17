@@ -5,33 +5,58 @@ import java.awt.event.ActionListener;
 
 public class UserView extends JFrame {
     private User user;
+    private DefaultListModel<String> followingModel;
     private DefaultListModel<String> feedModel;
 
     public UserView(User user) {
         this.user = user;
         setTitle("User View - " + user.getId());
-        setSize(400, 300);
+        setSize(400, 500);
+        setLayout(new BorderLayout());
 
-        feedModel = new DefaultListModel<>();
-        JList<String> newsFeedList = new JList<>(feedModel);
-        JScrollPane newsFeedView = new JScrollPane(newsFeedList);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new GridLayout(5, 1, 10, 10));
 
-        JPanel controlPanel = new JPanel();
-        JTextField followUserIdField = new JTextField(15);
-        JButton followButton = new JButton("Follow");
+        // Following section
+        JPanel followingPanel = new JPanel();
+        followingPanel.setLayout(new BorderLayout());
+
+        JTextField followUserIdField = new JTextField();
+        JButton followButton = new JButton("Follow User");
         followButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String userIdToFollow = followUserIdField.getText();
-                // logic to follow a user by ID, assuming a getUserById method exists
-                User userToFollow = getUserById(userIdToFollow); // implement this method
+                User userToFollow = UserDatabase.getUserById(userIdToFollow);
                 if (userToFollow != null) {
                     user.follow(userToFollow);
+                    followingModel.addElement(userToFollow.getId());
                 }
             }
         });
+        
 
-        JTextField tweetField = new JTextField(20);
+        followingPanel.add(new JLabel("TextArea - User Id"), BorderLayout.NORTH);
+        followingPanel.add(followUserIdField, BorderLayout.CENTER);
+        followingPanel.add(followButton, BorderLayout.EAST);
+
+        followingModel = new DefaultListModel<>();
+        JList<String> followingList = new JList<>(followingModel);
+        JScrollPane followingView = new JScrollPane(followingList);
+
+        JPanel currentFollowingPanel = new JPanel();
+        currentFollowingPanel.setLayout(new BorderLayout());
+        currentFollowingPanel.add(new JLabel("List View (Current Following)"), BorderLayout.NORTH);
+        currentFollowingPanel.add(followingView, BorderLayout.CENTER);
+
+        mainPanel.add(followingPanel);
+        mainPanel.add(currentFollowingPanel);
+
+        // Tweet section
+        JPanel tweetPanel = new JPanel();
+        tweetPanel.setLayout(new BorderLayout());
+
+        JTextField tweetField = new JTextField();
         JButton tweetButton = new JButton("Post Tweet");
         tweetButton.addActionListener(new ActionListener() {
             @Override
@@ -39,22 +64,41 @@ public class UserView extends JFrame {
                 String message = tweetField.getText();
                 if (!message.isEmpty()) {
                     user.postMessage(message);
-                    feedModel.addElement(message);
+                    feedModel.addElement(user.getId() + ": " + message);
+                    updateFollowersNewsFeeds(message);
                 }
             }
         });
 
-        controlPanel.add(new JLabel("Follow User ID:"));
-        controlPanel.add(followUserIdField);
-        controlPanel.add(followButton);
-        controlPanel.add(new JLabel("Post Tweet:"));
-        controlPanel.add(tweetField);
-        controlPanel.add(tweetButton);
+        tweetPanel.add(new JLabel("TextArea - Tweet Message"), BorderLayout.NORTH);
+        tweetPanel.add(tweetField, BorderLayout.CENTER);
+        tweetPanel.add(tweetButton, BorderLayout.EAST);
 
-        add(newsFeedView, BorderLayout.CENTER);
-        add(controlPanel, BorderLayout.SOUTH);
+        mainPanel.add(tweetPanel);
 
+        // News feed section
+        feedModel = new DefaultListModel<>();
+        JList<String> newsFeedList = new JList<>(feedModel);
+        JScrollPane newsFeedView = new JScrollPane(newsFeedList);
+
+        JPanel newsFeedPanel = new JPanel();
+        newsFeedPanel.setLayout(new BorderLayout());
+        newsFeedPanel.add(new JLabel("List View (News Feed)"), BorderLayout.NORTH);
+        newsFeedPanel.add(newsFeedView, BorderLayout.CENTER);
+
+        mainPanel.add(newsFeedPanel);
+
+        add(mainPanel, BorderLayout.CENTER);
+
+        updateFollowingList();
         updateNewsFeed();
+    }
+
+    private void updateFollowingList() {
+        followingModel.clear();
+        for (User u : user.getFollowing()) {
+            followingModel.addElement(u.getId());
+        }
     }
 
     private void updateNewsFeed() {
@@ -64,10 +108,14 @@ public class UserView extends JFrame {
         }
     }
 
+    private void updateFollowersNewsFeeds(String message) {
+        for (User follower : user.getFollowers()) {
+            follower.getNewsFeed().add(message);
+        }
+    }
+
     // Helper method to retrieve user by ID, this should be implemented accordingly
     private User getUserById(String userId) {
-        // Implement the logic to retrieve user by ID
-        return null;
+        return UserDatabase.getUserById(userId);
     }
 }
-

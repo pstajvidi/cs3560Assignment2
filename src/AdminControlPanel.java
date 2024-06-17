@@ -1,7 +1,8 @@
+
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,19 +12,21 @@ public class AdminControlPanel extends JFrame {
     private JTree tree;
     private DefaultTreeModel treeModel;
     private DefaultMutableTreeNode rootNode;
-    
+
     private AdminControlPanel() {
         setTitle("Admin Control Panel");
-        setSize(600, 400);
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         rootNode = new DefaultMutableTreeNode("Root");
         treeModel = new DefaultTreeModel(rootNode);
         tree = new JTree(treeModel);
         JScrollPane treeView = new JScrollPane(tree);
-        
+
         JPanel controlPanel = new JPanel();
-        JTextField userIdField = new JTextField(15);
+        controlPanel.setLayout(new GridLayout(6, 2, 10, 10));
+        
+        JTextField userIdField = new JTextField();
         JButton addUserButton = new JButton("Add User");
         addUserButton.addActionListener(new ActionListener() {
             @Override
@@ -31,6 +34,7 @@ public class AdminControlPanel extends JFrame {
                 String userId = userIdField.getText();
                 if (!userId.isEmpty()) {
                     User newUser = new User(userId);
+                    UserDatabase.addUser(newUser);
                     DefaultMutableTreeNode userNode = new DefaultMutableTreeNode(newUser);
                     rootNode.add(userNode);
                     treeModel.reload();
@@ -38,7 +42,8 @@ public class AdminControlPanel extends JFrame {
             }
         });
         
-        JTextField groupIdField = new JTextField(15);
+        
+        JTextField groupIdField = new JTextField();
         JButton addGroupButton = new JButton("Add Group");
         addGroupButton.addActionListener(new ActionListener() {
             @Override
@@ -83,7 +88,7 @@ public class AdminControlPanel extends JFrame {
             }
         });
 
-        JButton showMessageTotalButton = new JButton("Show Message Total");
+        JButton showMessageTotalButton = new JButton("Show Messages Total");
         showMessageTotalButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,10 +115,10 @@ public class AdminControlPanel extends JFrame {
             }
         });
 
-        controlPanel.add(new JLabel("User ID:"));
+        controlPanel.add(new JLabel("User Id"));
         controlPanel.add(userIdField);
         controlPanel.add(addUserButton);
-        controlPanel.add(new JLabel("Group ID:"));
+        controlPanel.add(new JLabel("Group Id"));
         controlPanel.add(groupIdField);
         controlPanel.add(addGroupButton);
         controlPanel.add(openUserViewButton);
@@ -123,9 +128,9 @@ public class AdminControlPanel extends JFrame {
         controlPanel.add(showPositivePercentageButton);
         
         add(treeView, BorderLayout.CENTER);
-        add(controlPanel, BorderLayout.SOUTH);
+        add(controlPanel, BorderLayout.EAST);
     }
-    
+
     public static AdminControlPanel getInstance() {
         if (instance == null) {
             instance = new AdminControlPanel();
@@ -133,3 +138,4 @@ public class AdminControlPanel extends JFrame {
         return instance;
     }
 }
+
