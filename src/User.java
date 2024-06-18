@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class User extends Observable {
+public class User extends UserComponent {
     private static int userCount = 0;
     private String id;
     private List<User> followers;
@@ -16,26 +16,35 @@ public class User extends Observable {
         userCount++;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
+    @Override
     public List<User> getFollowers() {
         return followers;
     }
 
+    @Override
     public List<User> getFollowing() {
         return following;
     }
 
+    @Override
     public List<String> getNewsFeed() {
         return newsFeed;
     }
 
-    public void follow(User user) {
-        if (!following.contains(user)) {
-            following.add(user);
-            user.addFollower(this);
+    @Override
+    public void follow(UserComponent userComponent) {
+        if (userComponent instanceof User) {
+            User user = (User) userComponent;
+            if (!following.contains(user)) {
+                following.add(user);
+                user.addFollower(this);
+                user.addObserver(this::updateNewsFeed);
+            }
         }
     }
 
@@ -45,16 +54,29 @@ public class User extends Observable {
         }
     }
 
+    @Override
     public void postMessage(String message) {
         newsFeed.add(message);
         notifyObservers(message);
     }
 
+    private void updateNewsFeed(String message) {
+        if (!newsFeed.contains(message)) {
+            newsFeed.add(message);
+        }
+    }
+
+    @Override
     public void accept(Visitor visitor) {
         visitor.visit(this);
     }
 
     public static int getUserCount() {
         return userCount;
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 }

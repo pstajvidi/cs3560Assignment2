@@ -2,7 +2,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Observable {
-    private List<Observer> observers = new ArrayList<>();
+    private List<Observer> observers;
+
+    public Observable() {
+        observers = new ArrayList<>();
+    }
 
     public void addObserver(Observer observer) {
         if (!observers.contains(observer)) {
@@ -20,3 +24,4 @@ public class Observable {
         }
     }
 }
+

@@ -34,7 +34,6 @@ public class UserView extends JFrame {
                 }
             }
         });
-        
 
         followingPanel.add(new JLabel("TextArea - User Id"), BorderLayout.NORTH);
         followingPanel.add(followUserIdField, BorderLayout.CENTER);
@@ -65,7 +64,6 @@ public class UserView extends JFrame {
                 if (!message.isEmpty()) {
                     user.postMessage(message);
                     feedModel.addElement(user.getId() + ": " + message);
-                    updateFollowersNewsFeeds(message);
                 }
             }
         });
@@ -106,16 +104,5 @@ public class UserView extends JFrame {
         for (String message : user.getNewsFeed()) {
             feedModel.addElement(message);
         }
-    }
-
-    private void updateFollowersNewsFeeds(String message) {
-        for (User follower : user.getFollowers()) {
-            follower.getNewsFeed().add(message);
-        }
-    }
-
-    // Helper method to retrieve user by ID, this should be implemented accordingly
-    private User getUserById(String userId) {
-        return UserDatabase.getUserById(userId);
     }
 }

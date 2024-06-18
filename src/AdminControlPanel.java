@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -41,7 +39,6 @@ public class AdminControlPanel extends JFrame {
                 }
             }
         });
-        
         
         JTextField groupIdField = new JTextField();
         JButton addGroupButton = new JButton("Add Group");
@@ -115,10 +112,10 @@ public class AdminControlPanel extends JFrame {
             }
         });
 
-        controlPanel.add(new JLabel("User Id"));
+        controlPanel.add(new JLabel("TextArea - User Id"));
         controlPanel.add(userIdField);
         controlPanel.add(addUserButton);
-        controlPanel.add(new JLabel("Group Id"));
+        controlPanel.add(new JLabel("TextArea - Group Id"));
         controlPanel.add(groupIdField);
         controlPanel.add(addGroupButton);
         controlPanel.add(openUserViewButton);

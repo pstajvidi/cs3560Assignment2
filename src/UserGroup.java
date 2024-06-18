@@ -1,37 +1,44 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserGroup {
+public class UserGroup extends UserComponent {
     private static int groupCount = 0;
     private String id;
-    private List<User> users;
-    private List<UserGroup> subGroups;
+    private List<UserComponent> userComponents;
 
     public UserGroup(String id) {
         this.id = id;
-        this.users = new ArrayList<>();
-        this.subGroups = new ArrayList<>();
+        this.userComponents = new ArrayList<>();
         groupCount++;
     }
 
+    @Override
     public String getId() {
         return id;
     }
 
-    public void addUser(User user) {
-        if (!users.contains(user)) {
-            users.add(user);
-        }
+    @Override
+    public void add(UserComponent userComponent) {
+        userComponents.add(userComponent);
     }
 
-    public void addSubGroup(UserGroup group) {
-        if (!subGroups.contains(group)) {
-            subGroups.add(group);
-        }
+    @Override
+    public void remove(UserComponent userComponent) {
+        userComponents.remove(userComponent);
+    }
+
+    @Override
+    public UserComponent getChild(int i) {
+        return userComponents.get(i);
     }
 
     public static int getGroupCount() {
         return groupCount;
+    }
+
+    @Override
+    public String toString() {
+        return id;
     }
 }
 
