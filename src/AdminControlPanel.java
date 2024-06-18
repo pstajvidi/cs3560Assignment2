@@ -13,7 +13,7 @@ public class AdminControlPanel extends JFrame {
 
     private AdminControlPanel() {
         setTitle("Admin Control Panel");
-        setSize(800, 600);
+        setSize(1000, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         rootNode = new DefaultMutableTreeNode("Root");
@@ -22,7 +22,7 @@ public class AdminControlPanel extends JFrame {
         JScrollPane treeView = new JScrollPane(tree);
 
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new GridLayout(6, 2, 10, 10));
+        controlPanel.setLayout(new GridLayout(4, 3, 15, 15));
         
         JTextField userIdField = new JTextField();
         JButton addUserButton = new JButton("Add User");
@@ -33,12 +33,20 @@ public class AdminControlPanel extends JFrame {
                 if (!userId.isEmpty()) {
                     User newUser = new User(userId);
                     UserDatabase.addUser(newUser);
-                    DefaultMutableTreeNode userNode = new DefaultMutableTreeNode(newUser);
-                    rootNode.add(userNode);
-                    treeModel.reload();
+                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                    if (selectedNode == null || selectedNode == rootNode|| selectedNode.getUserObject() instanceof UserGroup) {
+                        if (selectedNode == null) {
+                            selectedNode = rootNode;
+                        }
+                        selectedNode.add(new DefaultMutableTreeNode(newUser));
+                        treeModel.reload();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "You can only add users to a group or the root.");
+                    }
                 }
             }
         });
+        
         
         JTextField groupIdField = new JTextField();
         JButton addGroupButton = new JButton("Add Group");
@@ -48,12 +56,20 @@ public class AdminControlPanel extends JFrame {
                 String groupId = groupIdField.getText();
                 if (!groupId.isEmpty()) {
                     UserGroup newGroup = new UserGroup(groupId);
-                    DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(newGroup);
-                    rootNode.add(groupNode);
-                    treeModel.reload();
+                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+                    if (selectedNode == null || selectedNode==rootNode|| selectedNode.getUserObject() instanceof UserGroup) {
+                        if (selectedNode == null) {
+                            selectedNode = rootNode;
+                        }
+                        selectedNode.add(new DefaultMutableTreeNode(newGroup));
+                        treeModel.reload();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "You can only add groups to a group or the root.");
+                    }
                 }
             }
         });
+
 
         JButton openUserViewButton = new JButton("Open User View");
         openUserViewButton.addActionListener(new ActionListener() {
@@ -63,9 +79,12 @@ public class AdminControlPanel extends JFrame {
                 if (selectedNode != null && selectedNode.getUserObject() instanceof User) {
                     User selectedUser = (User) selectedNode.getUserObject();
                     new UserView(selectedUser).setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "You can only open the view for a user.");
                 }
             }
         });
+
 
         JButton showUserTotalButton = new JButton("Show User Total");
         showUserTotalButton.addActionListener(new ActionListener() {
@@ -104,6 +123,8 @@ public class AdminControlPanel extends JFrame {
                         Object obj = ((DefaultMutableTreeNode) node).getUserObject();
                         if (obj instanceof User) {
                             ((User) obj).accept(visitor);
+                        } else if (obj instanceof UserGroup) {
+                            ((UserGroup) obj).accept(visitor);
                         }
                     }
                 });
@@ -112,10 +133,10 @@ public class AdminControlPanel extends JFrame {
             }
         });
 
-        controlPanel.add(new JLabel("TextArea - User Id"));
+        controlPanel.add(new JLabel("User Id"));
         controlPanel.add(userIdField);
         controlPanel.add(addUserButton);
-        controlPanel.add(new JLabel("TextArea - Group Id"));
+        controlPanel.add(new JLabel("Group Id"));
         controlPanel.add(groupIdField);
         controlPanel.add(addGroupButton);
         controlPanel.add(openUserViewButton);
@@ -135,4 +156,3 @@ public class AdminControlPanel extends JFrame {
         return instance;
     }
 }
-

@@ -56,8 +56,9 @@ public class User extends UserComponent {
 
     @Override
     public void postMessage(String message) {
-        newsFeed.add(message);
-        notifyObservers(message);
+        String formattedMessage = id + ": " + message;
+        newsFeed.add(formattedMessage);
+        notifyObservers(formattedMessage);
     }
 
     private void updateNewsFeed(String message) {
@@ -80,3 +81,4 @@ public class User extends UserComponent {
         return id;
     }
 }
+

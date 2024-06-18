@@ -12,5 +12,3 @@ public class UserDatabase {
         return users.get(userId);
     }
 }
-
-

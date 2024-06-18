@@ -37,6 +37,13 @@ public class UserGroup extends UserComponent {
     }
 
     @Override
+    public void accept(Visitor visitor) {
+        for (UserComponent userComponent : userComponents) {
+            userComponent.accept(visitor);
+        }
+    }
+
+    @Override
     public String toString() {
         return id;
     }
