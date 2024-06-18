@@ -2,7 +2,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PositiveWordsVisitor implements Visitor {
-    private List<String> positiveWords = Arrays.asList("good", "great", "excellent", "awesome", "fantastic");
+    private List<String> positiveWords = Arrays.asList("good", "great", "excellent", "awesome", "fantastic", "love", "like", "happy", "nice");
     private int positiveCount = 0;
     private int totalCount = 0;
 
