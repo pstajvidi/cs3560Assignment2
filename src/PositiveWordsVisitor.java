@@ -1,6 +1,7 @@
 import java.util.Arrays;
 import java.util.List;
 
+//uses visitor to calculate stats
 public class PositiveWordsVisitor implements Visitor {
     private List<String> positiveWords = Arrays.asList("good", "great", "excellent", "awesome", "fantastic", "love", "like", "happy", "nice");
     private int positiveCount = 0;
@@ -18,6 +19,8 @@ public class PositiveWordsVisitor implements Visitor {
             }
         }
     }
+
+    
 
     public double getPositivePercentage() {
         if (totalCount == 0) {
