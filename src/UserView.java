@@ -35,7 +35,7 @@ public class UserView extends JFrame {
             }
         });
 
-        followingPanel.add(new JLabel("TextArea - User Id"), BorderLayout.NORTH);
+        followingPanel.add(new JLabel("User Id"), BorderLayout.NORTH);
         followingPanel.add(followUserIdField, BorderLayout.CENTER);
         followingPanel.add(followButton, BorderLayout.EAST);
 
@@ -68,7 +68,7 @@ public class UserView extends JFrame {
             }
         });
 
-        tweetPanel.add(new JLabel("TextArea - Tweet Message"), BorderLayout.NORTH);
+        tweetPanel.add(new JLabel("Tweet Message"), BorderLayout.NORTH);
         tweetPanel.add(tweetField, BorderLayout.CENTER);
         tweetPanel.add(tweetButton, BorderLayout.EAST);
 

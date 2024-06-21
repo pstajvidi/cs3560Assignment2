@@ -109,7 +109,7 @@ public class AdminControlPanel extends JFrame {
         showMessageTotalButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int messageCount = Message.getMessageCount();
+                int messageCount = User.getMessageCount();
                 JOptionPane.showMessageDialog(null, "Total Messages: " + messageCount);
             }
         });

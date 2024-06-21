@@ -3,6 +3,7 @@ import java.util.List;
 
 public class User extends UserComponent {
     private static int userCount = 0;
+    private static int messageCount = 0;
     private String id;
     private List<User> followers;
     private List<User> following;
@@ -58,6 +59,7 @@ public class User extends UserComponent {
     public void postMessage(String message) {
         String formattedMessage = id + ": " + message;
         newsFeed.add(formattedMessage);
+        messageCount++;
         notifyObservers(formattedMessage);
     }
 
@@ -74,6 +76,10 @@ public class User extends UserComponent {
 
     public static int getUserCount() {
         return userCount;
+    }
+
+    public static int getMessageCount() {
+        return messageCount;
     }
 
     @Override
