@@ -11,6 +11,7 @@ public class AdminControlPanel extends JFrame {
     private DefaultTreeModel treeModel;
     private DefaultMutableTreeNode rootNode;
 
+    //private constrocture to no let other instantiations
     private AdminControlPanel() {
         setTitle("Admin Control Panel");
         setSize(1000, 600);
@@ -149,8 +150,10 @@ public class AdminControlPanel extends JFrame {
         add(controlPanel, BorderLayout.EAST);
     }
 
+    //public method that instaticats AdminControlPanel once
     public static AdminControlPanel getInstance() {
         if (instance == null) {
+            
             instance = new AdminControlPanel();
         }
         return instance;

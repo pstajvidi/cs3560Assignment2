@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
+//notifys when something has changed, using the observor interface
 public class Observable {
     private List<Observer> observers;
 
