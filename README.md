@@ -11,7 +11,7 @@ The workspace contains two folders by default, where:
 
 # cs3560Assignment2
  
-The `src` folder contains files for the program: 
+The `src` folder contains these files for the program: 
 
 - `Driver`: This file will be the run the program, and the only file that has the main
 - `AdminControlPanel`: Create the programs java swing set up, as will as using the other files to make the program functional, it also uses a singleton desing strucutre, and will have only one instantiation
