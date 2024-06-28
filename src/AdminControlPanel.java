@@ -4,6 +4,8 @@ import javax.swing.tree.DefaultTreeModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AdminControlPanel extends JFrame {
     private static AdminControlPanel instance = null;
@@ -23,7 +25,7 @@ public class AdminControlPanel extends JFrame {
         JScrollPane treeView = new JScrollPane(tree);
 
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new GridLayout(4, 3, 15, 15));
+        controlPanel.setLayout(new GridLayout(5, 3, 15, 15));
         
         JTextField userIdField = new JTextField();
         JButton addUserButton = new JButton("Add User");
@@ -134,6 +136,23 @@ public class AdminControlPanel extends JFrame {
             }
         });
 
+        JButton validateIdsButton = new JButton("Validate IDs");
+        validateIdsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                validateIds();
+            }
+        });
+
+        
+        JButton showLastUpdateUserButton = new JButton("Show Last Update User");
+        showLastUpdateUserButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showLastUpdateUser();
+            }
+        });
+
         controlPanel.add(new JLabel("User Id"));
         controlPanel.add(userIdField);
         controlPanel.add(addUserButton);
@@ -145,6 +164,8 @@ public class AdminControlPanel extends JFrame {
         controlPanel.add(showGroupTotalButton);
         controlPanel.add(showMessageTotalButton);
         controlPanel.add(showPositivePercentageButton);
+        controlPanel.add(validateIdsButton);
+        controlPanel.add(showLastUpdateUserButton);
         
         add(treeView, BorderLayout.CENTER);
         add(controlPanel, BorderLayout.EAST);
@@ -157,5 +178,50 @@ public class AdminControlPanel extends JFrame {
             instance = new AdminControlPanel();
         }
         return instance;
+    }
+
+   // Method to validate user and group IDs
+   private void validateIds() {
+    Set<String> ids = new HashSet<>();
+    StringBuilder invalidIds = new StringBuilder();
+
+    rootNode.preorderEnumeration().asIterator().forEachRemaining(node -> {
+        if (node instanceof DefaultMutableTreeNode) {
+            Object obj = ((DefaultMutableTreeNode) node).getUserObject();
+            if (obj instanceof User) {
+                User user = (User) obj;
+                String userId = user.getId();
+                if (ids.contains(userId) || userId.contains(" ")) {
+                    invalidIds.append("User ID: ").append(userId).append("\n");
+                } else {
+                    ids.add(userId);
+                }
+            } else if (obj instanceof UserGroup) {
+                UserGroup group = (UserGroup) obj;
+                String groupId = group.getId();
+                if (ids.contains(groupId) || groupId.contains(" ")) {
+                    invalidIds.append("Group ID: ").append(groupId).append("\n");
+                } else {
+                    ids.add(groupId);
+                }
+            }
+        }
+    });
+
+    if (invalidIds.length() > 0) {
+        JOptionPane.showMessageDialog(this, "Invalid IDs:\n" + invalidIds.toString(), "Validation Error", JOptionPane.ERROR_MESSAGE);
+    } else {
+        JOptionPane.showMessageDialog(this, "All IDs are valid.", "Validation Successful", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
+
+    // Method to show the user who made the last update
+    private void showLastUpdateUser() {
+        User lastUpdateUser = User.getLastUpdateUser();
+        if (lastUpdateUser != null) {
+            JOptionPane.showMessageDialog(this, "User with Last Update: " + lastUpdateUser.getId(), "Last Update User", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "No users have posted updates.", "Last Update User", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }

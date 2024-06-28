@@ -4,16 +4,21 @@ import java.util.List;
 public class User extends UserComponent {
     private static int userCount = 0;
     private static int messageCount = 0;
+    private static User lastUpdateUser = null;
     private String id;
     private List<User> followers;
     private List<User> following;
     private List<String> newsFeed;
+    private long creationTime;
+    private long lastUpdateTime;
 
     public User(String id) {
         this.id = id;
         this.followers = new ArrayList<>();
         this.following = new ArrayList<>();
         this.newsFeed = new ArrayList<>();
+        this.creationTime = System.currentTimeMillis();
+        this.lastUpdateTime = creationTime;
         userCount++;
     }
 
@@ -60,12 +65,24 @@ public class User extends UserComponent {
         String formattedMessage = id + ": " + message;
         newsFeed.add(formattedMessage);
         messageCount++;
+        lastUpdateTime = System.currentTimeMillis();
+        lastUpdateUser = this;
         notifyObservers(formattedMessage);
+        updateFollowersLastUpdateTime();
     }
+
 
     private void updateNewsFeed(String message) {
         if (!newsFeed.contains(message)) {
             newsFeed.add(message);
+            lastUpdateTime = System.currentTimeMillis();
+            lastUpdateUser = this;
+        }
+    }
+    private void updateFollowersLastUpdateTime() {
+        for (User follower : followers) {
+            follower.setLastUpdateTime(System.currentTimeMillis());
+            lastUpdateUser = this;
         }
     }
 
@@ -81,6 +98,22 @@ public class User extends UserComponent {
     public static int getMessageCount() {
         return messageCount;
     }
+    public long getCreationTime() {
+        return creationTime;
+    }
+
+    public long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(long lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public static User getLastUpdateUser() {
+        return lastUpdateUser;
+    }
+
 
     @Override
     public String toString() {

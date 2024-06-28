@@ -2,20 +2,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.*;
+import java.util.*;
 
 public class UserView extends JFrame {
     private User user;
     private DefaultListModel<String> followingModel;
     private DefaultListModel<String> feedModel;
+    private JLabel lastUpdateTimeLabel;
+
 
     public UserView(User user) {
         this.user = user;
         setTitle("User View - " + user.getId());
-        setSize(400, 500);
+        setSize(600, 500);
         setLayout(new BorderLayout());
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(5, 1, 10, 10));
+        mainPanel.setLayout(new GridLayout(3, 1, 10, 10));
 
         // Following section
         JPanel followingPanel = new JPanel();
@@ -45,7 +49,7 @@ public class UserView extends JFrame {
 
         JPanel currentFollowingPanel = new JPanel();
         currentFollowingPanel.setLayout(new BorderLayout());
-        currentFollowingPanel.add(new JLabel("List View (Current Following)"), BorderLayout.NORTH);
+        currentFollowingPanel.add(new JLabel("Current Following"), BorderLayout.NORTH);
         currentFollowingPanel.add(followingView, BorderLayout.CENTER);
 
         mainPanel.add(followingPanel);
@@ -81,10 +85,32 @@ public class UserView extends JFrame {
 
         JPanel newsFeedPanel = new JPanel();
         newsFeedPanel.setLayout(new BorderLayout());
-        newsFeedPanel.add(new JLabel("List View (News Feed)"), BorderLayout.NORTH);
+        newsFeedPanel.add(new JLabel("News Feed"), BorderLayout.NORTH);
         newsFeedPanel.add(newsFeedView, BorderLayout.CENTER);
 
         mainPanel.add(newsFeedPanel);
+
+        // Creation time section
+        JPanel creationTimePanel = new JPanel();
+        creationTimePanel.setLayout(new BorderLayout());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String creationTimeString = sdf.format(new Date(user.getCreationTime()));
+
+        creationTimePanel.add(new JLabel("Creation Time: " + creationTimeString), BorderLayout.CENTER);
+        
+        mainPanel.add(creationTimePanel); 
+
+        // Last update time section
+        JPanel lastUpdateTimePanel = new JPanel();
+        lastUpdateTimePanel.setLayout(new BorderLayout());
+
+        lastUpdateTimeLabel = new JLabel();
+        updateLastUpdateTime();
+
+        lastUpdateTimePanel.add(lastUpdateTimeLabel, BorderLayout.CENTER);
+
+        mainPanel.add(lastUpdateTimePanel);
 
         add(mainPanel, BorderLayout.CENTER);
 
@@ -104,6 +130,13 @@ public class UserView extends JFrame {
         for (String message : user.getNewsFeed()) {
             feedModel.addElement(message);
         }
+        updateLastUpdateTime();
+    }
+
+    private void updateLastUpdateTime() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String lastUpdateTimeString = sdf.format(new Date(user.getLastUpdateTime()));
+        lastUpdateTimeLabel.setText("Last Update Time: " + lastUpdateTimeString);
     }
 }
 
